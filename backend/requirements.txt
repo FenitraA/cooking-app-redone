@@ -1,0 +1,15 @@
+httpx
+pytest
+num2words
+reportlab
+argon2_cffi
+ruff
+babel
+django
+djangorestframework
+gunicorn
+djangorestframework-simplejwt
+django-environ
+psycopg[binary]
+django-ratelimit
+django-cors-headers
