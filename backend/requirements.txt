@@ -3,6 +3,7 @@ pytest
 num2words
 reportlab
 argon2_cffi
+drf-spectacular
 ruff
 babel
 django
