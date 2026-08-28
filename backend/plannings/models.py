@@ -1,3 +1,6 @@
 from django.db import models
 
-# Create your models here.
+from backend.core.models import BaseModel
+
+class PlanningRecipe(BaseModel):
+    id_prefix = "planning_recipe"

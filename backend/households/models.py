@@ -1,3 +1,13 @@
 from django.db import models
+import uuid
 
-# Create your models here.
+from core.models import BaseModel
+
+class Household(BaseModel):
+    id_prefix = "household"
+    
+    name = models.CharField(
+        max_length=128,
+        null=False,
+        blank=False,
+    )

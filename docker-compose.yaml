@@ -19,21 +19,24 @@ services:
     build: ./backend
     env_file:
       - ./backend/.env
+    volumes:
+      - ./backend:/app
+      - /app/.venv
     ports:
       - "8000:8000"
     depends_on:
       db:
         condition: service_healthy
-    develop:
-      watch:
-        - action: sync
-          path: ./backend
-          target: /app
-          ignore:
-            - __pycache__/
-            - .venv/
-            - "*.pyc"
-        - action: rebuild
-          path: ./backend/requirements.txt
+    # develop:
+    #   watch:
+    #     - action: sync
+    #       path: ./backend
+    #       target: /app
+    #       ignore:
+    #         - __pycache__/
+    #         - .venv/
+    #         - "*.pyc"
+    #     - action: rebuild
+    #       path: ./backend/requirements.txt
 volumes:
   postgres_data:
