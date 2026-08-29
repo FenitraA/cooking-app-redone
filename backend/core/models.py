@@ -12,6 +12,16 @@ class TimestampedAndStated(models.Model):
         abstract = True
 
 
+class ImageCloudStorage():
+    # CDN URL your frontend uses
+    image_url = models.CharField(max_length=2048, null=True)
+    # Cloudinary public_id OR S3/R2 object_key (super useful for deletes)
+    storage_key = models.CharField(max_length=255, null=True)
+
+    class Meta:
+        abstract = True
+
+
 class BaseModel(TimestampedAndStated):
     id_prefix = None
 
@@ -37,13 +47,12 @@ class BaseModel(TimestampedAndStated):
 
         super().save(*args, **kwargs)
 
+
 class Counter(BaseModel):
     id_prefix = "counter"
-    
+
     name = models.CharField(
         max_length=128,
         unique=True,
     )
-    current_value = models.IntegerField(
-        default=0
-    )
+    current_value = models.IntegerField(default=0)
