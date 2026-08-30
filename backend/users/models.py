@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-import uuid
 
 from households.models import Household
 from core.models import BaseModel
@@ -15,6 +14,8 @@ class AppUser(AbstractUser, BaseModel):
     )
     household = models.ForeignKey(
         Household,
+        null=True,
         on_delete=models.CASCADE,
         related_name="users",
     )
+    
