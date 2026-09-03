@@ -146,11 +146,17 @@ PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.Argon2PasswordHasher",
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:4200",
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
 AUTH_USER_MODEL = "users.AppUser"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "users.authentication.CookieJWTAuthentication",
     ),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }

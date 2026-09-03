@@ -1,4 +1,5 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework import serializers
 
 class MyTokenSerializer(TokenObtainPairSerializer):
 
@@ -10,3 +11,7 @@ class MyTokenSerializer(TokenObtainPairSerializer):
         token["username"] = user.username
 
         return token
+
+class UserLoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
