@@ -1,5 +1,6 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
+from users.models import AppUser
 
 class MyTokenSerializer(TokenObtainPairSerializer):
 
@@ -15,3 +16,17 @@ class MyTokenSerializer(TokenObtainPairSerializer):
 class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()
+    
+class AppUserSerializer(serializers.ModelSerializer):
+    household_name = serializers.CharField(
+        source="household.name",
+        read_only=True,
+    )
+
+    class Meta:
+        model = AppUser
+        exclude = (
+            "password",
+            "groups",
+            "user_permissions",
+        )
