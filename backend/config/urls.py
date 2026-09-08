@@ -23,6 +23,7 @@ from drf_spectacular.views import (
 )
 
 urlpatterns = [
+    path("api/v1/cloudinary/", include("images.urls")),
     path("api/v1/users/", include("users.urls")),
     path("api/v1/households/", include("households.urls")),
     path("admin/", admin.site.urls),
