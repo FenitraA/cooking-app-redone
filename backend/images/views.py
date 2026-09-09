@@ -9,9 +9,7 @@ from rest_framework.views import APIView
 from images.services import get_cloudinary_config
 
 class CloudinarySignView(APIView):
-    permission_classes = [
-        IsAuthenticated,
-    ]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         folder = request.query_params.get("folder", "lots")

@@ -21,6 +21,7 @@ from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularSwaggerView,
 )
+from rest_framework.permissions import AllowAny
 
 urlpatterns = [
     path("api/v1/cloudinary/", include("images.urls")),
@@ -29,12 +30,19 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path(
         "api/schema/",
-        SpectacularAPIView.as_view(),
+        SpectacularAPIView.as_view(
+            permission_classes=[AllowAny],
+            authentication_classes=[],
+        ),
         name="schema",
     ),
     path(
         "api/docs/",
-        SpectacularSwaggerView.as_view(url_name="schema"),
+        SpectacularSwaggerView.as_view(
+            url_name="schema",
+            permission_classes=[AllowAny],
+            authentication_classes=[],
+        ),
         name="swagger-ui",
     ),
 ]
