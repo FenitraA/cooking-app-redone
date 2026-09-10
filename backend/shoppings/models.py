@@ -19,6 +19,7 @@ class ItemCategory(BaseModel):
         unique=True,
     )
 
+
 class Shopping(BaseModel):
     id_prefix = "shopping"
 

@@ -5,7 +5,10 @@ from shoppings.models import (
     ShoppingItem,
     ItemToBuy,
 )
-
+class ItemCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ItemCategory
+        fields = "__all__"
 
 class ShoppingItemSerializer(serializers.ModelSerializer):
     ingredient_name = serializers.CharField(

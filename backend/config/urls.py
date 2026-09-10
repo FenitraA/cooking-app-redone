@@ -27,6 +27,10 @@ urlpatterns = [
     path("api/v1/cloudinary/", include("images.urls")),
     path("api/v1/users/", include("users.urls")),
     path("api/v1/households/", include("households.urls")),
+    path("api/v1/ingredients/", include("ingredients.urls")),
+    path("api/v1/plannings/", include("plannings.urls")),
+    path("api/v1/recipes/", include("recipes.urls")),
+    path("api/v1/shoppings/", include("shoppings.urls")),
     path("admin/", admin.site.urls),
     path(
         "api/schema/",
