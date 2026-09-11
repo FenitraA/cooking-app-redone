@@ -1,7 +1,7 @@
 from django.db import models
 
 from households.models import Household
-from core.models import BaseModel, ImageCloudStorage
+from core.models import BaseModel, BaseModelPlusImageCloudStorage
 
 
 class UnitGroup(BaseModel):
@@ -48,7 +48,7 @@ class IngredientType(BaseModel):
     )
 
 
-class Ingredient(BaseModel, ImageCloudStorage):
+class Ingredient(BaseModelPlusImageCloudStorage):
     id_prefix = "ingredient"
 
     name = models.CharField(

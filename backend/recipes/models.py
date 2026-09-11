@@ -1,10 +1,10 @@
 from django.db import models
 
-from core.models import BaseModel, ImageCloudStorage, TimestampedAndStated
+from core.models import BaseModel, BaseModelPlusImageCloudStorage, TimestampedAndStated
 from households.models import Household
 from ingredients.models import Ingredient, IngredientStock, IngredientUnit
 
-class Recipe(BaseModel,ImageCloudStorage):
+class Recipe(BaseModelPlusImageCloudStorage):
     id_prefix = "recipe"
     
     name = models.CharField(

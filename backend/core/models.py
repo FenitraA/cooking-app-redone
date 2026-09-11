@@ -5,22 +5,11 @@ from django.db import models
 
 class TimestampedAndStated(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True,null=True)
     state = models.IntegerField(default=1)
 
     class Meta:
         abstract = True
-
-
-class ImageCloudStorage():
-    # CDN URL your frontend uses
-    image_url = models.CharField(max_length=2048, null=True)
-    # Cloudinary public_id OR S3/R2 object_key (super useful for deletes)
-    storage_key = models.CharField(max_length=255, null=True)
-
-    class Meta:
-        abstract = True
-
 
 class BaseModel(TimestampedAndStated):
     id_prefix = None
@@ -46,6 +35,16 @@ class BaseModel(TimestampedAndStated):
             self.id = self.__class__.generate_id()
 
         super().save(*args, **kwargs)
+
+
+class BaseModelPlusImageCloudStorage(BaseModel):
+    # CDN URL your frontend uses
+    image_url = models.CharField(max_length=2048, null=True, blank=True)
+    # Cloudinary public_id OR S3/R2 object_key (super useful for deletes)
+    storage_key = models.CharField(max_length=255, null=True, blank=True)
+
+    class Meta:
+        abstract = True
 
 
 class Counter(BaseModel):
