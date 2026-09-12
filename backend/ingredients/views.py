@@ -1,4 +1,3 @@
-from django.db.models import F, DecimalField, ExpressionWrapper
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework import viewsets
@@ -10,7 +9,20 @@ from ingredients.models import (
     Seller,
     UnitGroup,
 )
+
+from django.db.models import (
+    DecimalField,
+    ExpressionWrapper,
+    F,
+    OuterRef,
+    Subquery,
+    Sum,
+    Value,
+)
+from django.db.models.functions import Coalesce
+
 from ingredients.serializers import (
+    IngredientSearchSerializer,
     IngredientSerializer,
     IngredientStockSerializer,
     IngredientTypeSerializer,
@@ -18,6 +30,7 @@ from ingredients.serializers import (
     SellerSerializer,
     UnitGroupSerializer,
 )
+from recipes.models import MealIngredient
 
 
 @extend_schema_view(
@@ -57,54 +70,13 @@ class IngredientUnitViewSet(viewsets.ModelViewSet):
     destroy=extend_schema(tags=["IngredientTypes"]),
 )
 class IngredientTypeViewSet(viewsets.ModelViewSet):
+    queryset = IngredientType.objects.all()
     serializer_class = IngredientTypeSerializer
     permission_classes = [DjangoModelPermissions]
 
-    def get_queryset(self):
-        queryset = Ingredient.objects.select_related(
-            "ingredient_unit", "ingredient_type", "ingredient_unit__unit_group"
-        ).filter(state__gt=0)
-
-        # Query params
-        name = self.request.query_params.get("name")
-        type_id = self.request.query_params.get("type_id")
-        min_stock = self.request.query_params.get("min_stock")
-        sort_by = self.request.query_params.get("sort_by")
-        sort_direction = self.request.query_params.get("sort_direction", "asc")
-
-        # Filters
-        if name:
-            queryset = queryset.filter(name__icontains=name)
-
-        if type_id:
-            queryset = queryset.filter(ingredient_type_id=type_id)
-
-        if min_stock:
-            queryset = queryset.filter(quantity_left__gte=min_stock)
-
-        # Sorting
-        if sort_by == "unit_cost":
-            queryset = queryset.annotate(
-                unit_cost=ExpressionWrapper(
-                    F("estimated_price") / F("ingredient_unit__multiplier_to_base"),
-                    output_field=DecimalField(),
-                )
-            )
-
-            order = "-unit_cost" if sort_direction == "desc" else "unit_cost"
-
-            queryset = queryset.order_by(
-                "ingredient_unit__unit_group_id", order, "name"
-            )
-
-        else:
-            queryset = queryset.order_by("ingredient_unit__unit_group_id", "name")
-
-        return queryset
-
 
 @extend_schema_view(
-    list=extend_schema(tags=["Ingredients"]),
+    list=extend_schema(tags=["Ingredients"],parameters=[IngredientSearchSerializer]),
     retrieve=extend_schema(tags=["Ingredients"]),
     create=extend_schema(tags=["Ingredients"]),
     update=extend_schema(tags=["Ingredients"]),
@@ -112,9 +84,22 @@ class IngredientTypeViewSet(viewsets.ModelViewSet):
     destroy=extend_schema(tags=["Ingredients"]),
 )
 class IngredientViewSet(viewsets.ModelViewSet):
-    queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     permission_classes = [DjangoModelPermissions]
+
+    def get_queryset(self):
+        return (
+            Ingredient.objects.active()
+            .with_related()
+            .with_quantity_left()
+            .filter_name(self.request.query_params.get("name"))
+            .filter_type(self.request.query_params.get("type_id"))
+            .filter_stock(self.request.query_params.get("min_stock"))
+            .apply_sorting(
+                self.request.query_params.get("sort_by"),
+                self.request.query_params.get("sort_direction"),
+            )
+        )
 
 
 @extend_schema_view(

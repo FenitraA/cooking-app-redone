@@ -2,6 +2,7 @@ from django.db import models
 
 from households.models import Household
 from core.models import BaseModel, BaseModelPlusImageCloudStorage
+from ingredients.querysets import IngredientQuerySet
 
 
 class UnitGroup(BaseModel):
@@ -66,6 +67,9 @@ class Ingredient(BaseModelPlusImageCloudStorage):
         on_delete=models.CASCADE,
         related_name="ingredients",
     )
+    
+    # Query set manager
+    objects = IngredientQuerySet.as_manager()
 
 
 class Seller(BaseModel):
