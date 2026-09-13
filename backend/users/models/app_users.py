@@ -13,7 +13,7 @@ class AppUser(AbstractUser, BaseModel):
         blank=True,
     )
     household = models.ForeignKey(
-        Household,
+        "households.Household",
         null=True,
         on_delete=models.CASCADE,
         related_name="users",

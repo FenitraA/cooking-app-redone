@@ -1,7 +1,6 @@
 from django.db import models
 
 from core.models import BaseModel
-from households.models import Household
 from recipes.models import Recipe
 
 
@@ -17,7 +16,7 @@ class PlanningRecipe(BaseModel):
     description = models.TextField(null=True)
     
     household = models.ForeignKey(
-        Household,
+        "households.Household",
         on_delete=models.CASCADE,
         related_name="planning_recipes"
     )
