@@ -1,21 +1,33 @@
 
 from django.db import models
 
+from django.core.validators import MinLengthValidator
 from core.models import TimestampedAndStated
+from core.validators import validate_positive
 
 
 class RecipeIngredient(TimestampedAndStated):
     id_prefix = "recipe_ingredient"
-    
-    pk = models.CompositePrimaryKey("insertion_id","recipe","ingredient")
+
+    pk = models.CompositePrimaryKey(
+        "insertion_id",
+        "recipe",
+        "ingredient",
+    )
 
     quantity = models.DecimalField(
         max_digits=16,
         decimal_places=2,
+        validators=[
+            validate_positive,
+        ],
     )
-    
+
     insertion_id = models.CharField(
         max_length=64,
+        validators=[
+            MinLengthValidator(1),
+        ],
     )
 
     recipe = models.ForeignKey(

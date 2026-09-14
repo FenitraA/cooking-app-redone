@@ -7,7 +7,11 @@ class Shopping(BaseModel):
     id_prefix = "shopping"
 
     shopping_date = models.DateField()
-    description = models.TextField(null=True)
+
+    description = models.TextField(
+        null=True,
+        blank=True,
+    )
 
     household = models.ForeignKey(
         "households.Household",

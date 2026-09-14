@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from rest_framework import serializers
 from ingredients.models import (
     UnitGroup,
@@ -8,11 +10,13 @@ from ingredients.models import (
     IngredientStock,
 )
 
+
 class UnitGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = UnitGroup
         fields = "__all__"
-        
+
+
 class IngredientUnitSerializer(serializers.ModelSerializer):
     unit_group_name = serializers.CharField(
         source="unit_group.name",
@@ -23,11 +27,13 @@ class IngredientUnitSerializer(serializers.ModelSerializer):
         model = IngredientUnit
         fields = "__all__"
 
+
 class IngredientTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = IngredientType
         fields = "__all__"
-        
+
+
 class IngredientSerializer(serializers.ModelSerializer):
     ingredient_type_name = serializers.CharField(
         source="ingredient_type.name",
@@ -44,16 +50,18 @@ class IngredientSerializer(serializers.ModelSerializer):
         decimal_places=2,
         read_only=True,
     )
-    
+
     class Meta:
         model = Ingredient
         fields = "__all__"
-        
+
+
 class SellerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Seller
         fields = "__all__"
-        
+
+
 class IngredientStockSerializer(serializers.ModelSerializer):
     ingredient_name = serializers.CharField(
         source="ingredient.name",
@@ -68,10 +76,12 @@ class IngredientStockSerializer(serializers.ModelSerializer):
     class Meta:
         model = IngredientStock
         fields = "__all__"
-        
+
+
 ### ------------------------------
 #  Query serializers
 ### ------------------------------
+
 
 class IngredientSearchSerializer(serializers.Serializer):
     name = serializers.CharField(required=False)

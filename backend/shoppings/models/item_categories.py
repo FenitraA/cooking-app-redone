@@ -1,6 +1,7 @@
 from django.db import models
 
 from core.models import BaseModel
+from django.core.validators import MinLengthValidator
 
 
 class ItemCategory(BaseModel):
@@ -9,10 +10,15 @@ class ItemCategory(BaseModel):
     name = models.CharField(
         max_length=128,
         unique=True,
+        validators=[
+            MinLengthValidator(2),
+        ],
     )
 
-    # internal and stable identifier
     code = models.CharField(
         max_length=128,
         unique=True,
+        validators=[
+            MinLengthValidator(1),
+        ],
     )
