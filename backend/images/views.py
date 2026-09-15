@@ -7,9 +7,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from images.services import get_cloudinary_config
+from images.throttles import CloudinarySignRateThrottle
 
 class CloudinarySignView(APIView):
     permission_classes = [IsAuthenticated]
+    throttle_classes = [CloudinarySignRateThrottle]
 
     def get(self, request):
         folder = request.query_params.get("folder", "lots")

@@ -106,6 +106,7 @@ class RefreshView(APIView):
             httponly=True,
             secure=False,
             samesite="Lax",
+            max_age=int(api_settings.REFRESH_TOKEN_LIFETIME.total_seconds()),
         )
 
         return response

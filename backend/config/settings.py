@@ -118,6 +118,7 @@ REST_FRAMEWORK = {
         "user": "1000/hour",
         "login": "5/minute",
         "refresh": "10/minute",
+        "cloudinary" : "30/minute",
     },
 }
 

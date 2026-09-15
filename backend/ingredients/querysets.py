@@ -12,22 +12,21 @@ from django.db import models
 from django.apps import apps
 
 
-
 class IngredientQuerySet(models.QuerySet):
 
     def active(self):
         return self.filter(state__gt=0)
-    
+
     def with_related(self):
         return self.select_related(
             "ingredient_type",
             "ingredient_unit",
             "ingredient_unit__unit_group",
         )
-        
+
     def with_quantity_left(self):
-        IngredientStock = apps.get_model('ingredients', 'IngredientStock')
-        MealIngredient = apps.get_model('recipes', 'MealIngredient')
+        IngredientStock = apps.get_model("ingredients", "IngredientStock")
+        MealIngredient = apps.get_model("recipes", "MealIngredient")
 
         # ----------------------------------------
         # Quantity used from each stock
