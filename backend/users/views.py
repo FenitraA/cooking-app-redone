@@ -1,3 +1,7 @@
+from datetime import datetime, timezone
+from rest_framework_simplejwt.settings import api_settings
+
+from django.conf import settings
 from django.contrib.auth import authenticate
 
 from drf_spectacular.utils import extend_schema
@@ -11,6 +15,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from users.serializers import UserLoginSerializer
 from users.throttles import LoginRateThrottle, RefreshRateThrottle
+
 
 class LoginView(APIView):
     throttle_classes = [LoginRateThrottle]
@@ -38,6 +43,8 @@ class LoginView(APIView):
         refresh = RefreshToken.for_user(user)
         access = refresh.access_token
 
+        now = datetime.now(timezone.utc)
+
         response = Response(
             {
                 "detail": "Login successful",
@@ -48,16 +55,18 @@ class LoginView(APIView):
             key="access_token",
             value=str(access),
             httponly=True,
-            secure=False,  # True in production
+            secure=True,
             samesite="Lax",
+            max_age=int(api_settings.ACCESS_TOKEN_LIFETIME.total_seconds()),
         )
 
         response.set_cookie(
             key="refresh_token",
             value=str(refresh),
             httponly=True,
-            secure=False,  # True in production
+            secure=True,
             samesite="Lax",
+            max_age=int(api_settings.REFRESH_TOKEN_LIFETIME.total_seconds()),
         )
 
         return response
@@ -100,15 +109,18 @@ class RefreshView(APIView):
         )
 
         return response
-    
+
+
 class LogoutView(APIView):
     permission_classes = [AllowAny]
     authentication_classes = []
 
     def post(self, request):
-        response = Response({
-            "detail": "Logout successful",
-        })
+        response = Response(
+            {
+                "detail": "Logout successful",
+            }
+        )
 
         response.delete_cookie("access_token")
         response.delete_cookie("refresh_token")

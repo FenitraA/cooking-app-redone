@@ -4,6 +4,7 @@ from rest_framework import viewsets
 from households.models import Household
 from households.serializers import HouseholdSerializer
 
+
 @extend_schema_view(
     list=extend_schema(tags=["Households"]),
     retrieve=extend_schema(tags=["Households"]),
@@ -13,6 +14,8 @@ from households.serializers import HouseholdSerializer
     destroy=extend_schema(tags=["Households"]),
 )
 class HouseholdViewSet(viewsets.ModelViewSet):
-    queryset = Household.objects.all()
     serializer_class = HouseholdSerializer
     permission_classes = [DjangoModelPermissions]
+
+    def get_queryset(self):
+        return Household.objects.active()
