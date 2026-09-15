@@ -18,4 +18,6 @@ class HouseholdViewSet(viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissions]
 
     def get_queryset(self):
-        return Household.objects.active()
+        return Household.objects.active().filter_name(
+            self.request.query_params.get("name")
+        )
