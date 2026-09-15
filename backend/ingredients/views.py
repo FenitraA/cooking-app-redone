@@ -100,6 +100,20 @@ class IngredientViewSet(viewsets.ModelViewSet):
                 self.request.query_params.get("sort_direction"),
             )
         )
+    def perform_update(self, serializer):
+        ingredient = self.get_object()
+
+        old_storage_key = ingredient.storage_key
+
+        super().perform_update(serializer)
+
+        new_storage_key = ingredient.storage_key
+
+        if old_storage_key and old_storage_key != new_storage_key:
+            cloudinary.uploader.destroy(
+                old_storage_key,
+                invalidate=True,
+            )
 
 
 @extend_schema_view(
