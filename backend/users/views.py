@@ -10,8 +10,10 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from users.serializers import UserLoginSerializer
+from users.throttles import LoginRateThrottle, RefreshRateThrottle
 
 class LoginView(APIView):
+    throttle_classes = [LoginRateThrottle]
     permission_classes = [AllowAny]
     authentication_classes = []
 
@@ -62,6 +64,7 @@ class LoginView(APIView):
 
 
 class RefreshView(APIView):
+    throttle_classes = [RefreshRateThrottle]
     permission_classes = [AllowAny]
     authentication_classes = []
 
