@@ -25,7 +25,9 @@ from ingredients.serializers import (
     IngredientSearchSerializer,
     IngredientSerializer,
     IngredientStockSerializer,
+    IngredientTypeSearchSerializer,
     IngredientTypeSerializer,
+    IngredientUnitSearchSerializer,
     IngredientUnitSerializer,
     SellerSerializer,
     UnitGroupSerializer,
@@ -48,7 +50,9 @@ class UnitGroupViewSet(viewsets.ModelViewSet):
 
 
 @extend_schema_view(
-    list=extend_schema(tags=["IngredientUnits"]),
+    list=extend_schema(
+        tags=["IngredientUnits"], parameters=[IngredientUnitSearchSerializer]
+    ),
     retrieve=extend_schema(tags=["IngredientUnits"]),
     create=extend_schema(tags=["IngredientUnits"]),
     update=extend_schema(tags=["IngredientUnits"]),
@@ -56,13 +60,19 @@ class UnitGroupViewSet(viewsets.ModelViewSet):
     destroy=extend_schema(tags=["IngredientUnits"]),
 )
 class IngredientUnitViewSet(viewsets.ModelViewSet):
-    queryset = IngredientUnit.objects.all()
     serializer_class = IngredientUnitSerializer
     permission_classes = [DjangoModelPermissions]
 
+    def get_queryset(self):
+        return IngredientUnit.objects.active().filter_name(
+            self.request.query_params.get("name")
+        )
+
 
 @extend_schema_view(
-    list=extend_schema(tags=["IngredientTypes"]),
+    list=extend_schema(
+        tags=["IngredientTypes"], parameters=[IngredientTypeSearchSerializer]
+    ),
     retrieve=extend_schema(tags=["IngredientTypes"]),
     create=extend_schema(tags=["IngredientTypes"]),
     update=extend_schema(tags=["IngredientTypes"]),
@@ -70,13 +80,17 @@ class IngredientUnitViewSet(viewsets.ModelViewSet):
     destroy=extend_schema(tags=["IngredientTypes"]),
 )
 class IngredientTypeViewSet(viewsets.ModelViewSet):
-    queryset = IngredientType.objects.all()
     serializer_class = IngredientTypeSerializer
     permission_classes = [DjangoModelPermissions]
 
+    def get_queryset(self):
+        return IngredientType.objects.active().filter_name(
+            self.request.query_params.get("name")
+        )
+
 
 @extend_schema_view(
-    list=extend_schema(tags=["Ingredients"],parameters=[IngredientSearchSerializer]),
+    list=extend_schema(tags=["Ingredients"], parameters=[IngredientSearchSerializer]),
     retrieve=extend_schema(tags=["Ingredients"]),
     create=extend_schema(tags=["Ingredients"]),
     update=extend_schema(tags=["Ingredients"]),
@@ -100,6 +114,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
                 self.request.query_params.get("sort_direction"),
             )
         )
+
     def perform_update(self, serializer):
         ingredient = self.get_object()
 
@@ -125,13 +140,17 @@ class IngredientViewSet(viewsets.ModelViewSet):
     destroy=extend_schema(tags=["Sellers"]),
 )
 class SellerViewSet(viewsets.ModelViewSet):
-    queryset = Seller.objects.all()
     serializer_class = SellerSerializer
     permission_classes = [DjangoModelPermissions]
 
+    def get_queryset(self):
+        return Seller.objects.active().filter_name(
+            self.request.query_params.get("name")
+        )
+
 
 @extend_schema_view(
-    list=extend_schema(tags=["IngredientStocks"]),
+    list=extend_schema(tags=["IngredientStocks"], parameters=IngredientStockSerializer),
     retrieve=extend_schema(tags=["IngredientStocks"]),
     create=extend_schema(tags=["IngredientStocks"]),
     update=extend_schema(tags=["IngredientStocks"]),
@@ -142,3 +161,8 @@ class IngredientStockViewSet(viewsets.ModelViewSet):
     queryset = IngredientStock.objects.all()
     serializer_class = IngredientStockSerializer
     permission_classes = [DjangoModelPermissions]
+
+    def get_queryset(self):
+        return IngredientStock.objects.active().filter_ingredient(
+            self.request.query_params.get("ingredient_id")
+        )

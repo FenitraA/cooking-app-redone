@@ -109,7 +109,7 @@ class IngredientQuerySet(models.QuerySet):
         return self
 
     def filter_type(self, type_id=None):
-        if type_id:
+        if type_id is not None:
             return self.filter(ingredient_type_id=type_id)
         return self
 

@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MinLengthValidator
 from core.models import BaseModel
+from ingredients.querysets.ingredient_types import IngredientTypeQuerySet
 
 
 class IngredientType(BaseModel):
@@ -13,3 +14,5 @@ class IngredientType(BaseModel):
             MinLengthValidator(2),
         ],
     )
+
+    objects = IngredientTypeQuerySet.as_manager()

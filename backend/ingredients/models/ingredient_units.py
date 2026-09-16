@@ -5,6 +5,7 @@ from django.db import models
 from django.core.validators import MinLengthValidator
 from core.models import BaseModel
 from core.validators import validate_positive
+from ingredients.querysets.ingredient_units import IngredientUnitQuerySet
 
 
 class IngredientUnit(BaseModel):
@@ -39,3 +40,5 @@ class IngredientUnit(BaseModel):
         on_delete=models.CASCADE,
         related_name="ingredient_units",
     )
+
+    objects = IngredientUnitQuerySet.as_manager()

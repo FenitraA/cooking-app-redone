@@ -2,6 +2,7 @@ from django.db import models
 
 from core.models import BaseModel
 from core.validators import validate_non_negative, validate_positive
+from ingredients.querysets.ingredient_stocks import IngredientStockQuerySet
 
 class IngredientStock(BaseModel):
     id_prefix = "ingredient_stock"
@@ -39,3 +40,5 @@ class IngredientStock(BaseModel):
         on_delete=models.CASCADE,
         related_name="ingredient_stocks",
     )
+    
+    objects = IngredientStockQuerySet.as_manager()

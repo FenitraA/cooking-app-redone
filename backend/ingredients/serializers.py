@@ -109,3 +109,16 @@ class IngredientSearchSerializer(serializers.Serializer):
         ],
         required=False,
     )
+
+class IngredientTypeSearchSerializer(serializers.Serializer):
+    name = serializers.CharField(required=False)
+    
+class IngredientUnitSearchSerializer(serializers.Serializer):
+    name = serializers.CharField(required=False)
+
+class IngredientStockSearchSerializer(serializers.Serializer):
+    ingredient_id = serializers.CharField(required=False)
+    
+class SellerSearchSerializer(serializers.Serializer):
+    name = serializers.CharField(required=False)
+

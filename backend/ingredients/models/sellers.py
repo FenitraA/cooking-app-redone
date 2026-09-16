@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MinLengthValidator
 from core.models import BaseModel
+from ingredients.querysets.sellers import SellerQuerySet
 
 
 class Seller(BaseModel):
@@ -13,3 +14,5 @@ class Seller(BaseModel):
             MinLengthValidator(2),
         ],
     )
+    
+    objects = SellerQuerySet.as_manager()

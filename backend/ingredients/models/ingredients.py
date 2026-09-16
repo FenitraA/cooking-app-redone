@@ -3,9 +3,9 @@ from decimal import Decimal
 from django.db import models
 
 from core.models import BaseModelPlusImageCloudStorage
-from ingredients.querysets import IngredientQuerySet
 from django.core.validators import MinLengthValidator
 from core.validators import validate_non_negative
+from ingredients.querysets.ingredients import IngredientQuerySet
 
 
 class Ingredient(BaseModelPlusImageCloudStorage):
