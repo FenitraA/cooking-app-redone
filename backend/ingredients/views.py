@@ -132,7 +132,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
 
 
 @extend_schema_view(
-    list=extend_schema(tags=["Sellers"]),
+    list=extend_schema(tags=["Sellers"], parameters=[SellerSerializer]),
     retrieve=extend_schema(tags=["Sellers"]),
     create=extend_schema(tags=["Sellers"]),
     update=extend_schema(tags=["Sellers"]),
@@ -150,7 +150,7 @@ class SellerViewSet(viewsets.ModelViewSet):
 
 
 @extend_schema_view(
-    list=extend_schema(tags=["IngredientStocks"], parameters=IngredientStockSerializer),
+    list=extend_schema(tags=["IngredientStocks"], parameters=[IngredientStockSerializer]),
     retrieve=extend_schema(tags=["IngredientStocks"]),
     create=extend_schema(tags=["IngredientStocks"]),
     update=extend_schema(tags=["IngredientStocks"]),

@@ -3,6 +3,8 @@ from django.db import models
 from core.models import BaseModel
 from django.core.validators import MinLengthValidator
 
+from shoppings.querysets.item_categories import ItemCategoryQuerySet
+
 
 class ItemCategory(BaseModel):
     id_prefix = "item_category"
@@ -22,3 +24,5 @@ class ItemCategory(BaseModel):
             MinLengthValidator(1),
         ],
     )
+    
+    objects = ItemCategoryQuerySet.as_manager()

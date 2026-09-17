@@ -3,6 +3,7 @@ from django.db import models
 from core.models import BaseModel
 from django.core.validators import MinLengthValidator
 from core.validators import validate_non_negative, validate_positive
+from shoppings.querysets.shopping_items import ShoppingItemQuerySet
 
 
 class ShoppingItem(BaseModel):
@@ -56,3 +57,5 @@ class ShoppingItem(BaseModel):
         on_delete=models.CASCADE,
         related_name="shopping_items",
     )
+
+    objects = ShoppingItemQuerySet.as_manager()

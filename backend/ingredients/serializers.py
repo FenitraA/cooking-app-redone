@@ -79,7 +79,7 @@ class IngredientStockSerializer(serializers.ModelSerializer):
 
 
 ### ------------------------------
-#  Query serializers
+#  Search serializers
 ### ------------------------------
 
 

@@ -1,6 +1,7 @@
 from django.db import models
 
 from core.models import BaseModel
+from shoppings.querysets.shoppings import ShoppingQuerySet
 
 
 class Shopping(BaseModel):
@@ -18,3 +19,5 @@ class Shopping(BaseModel):
         on_delete=models.CASCADE,
         related_name="shoppings",
     )
+
+    objects = ShoppingQuerySet.as_manager()

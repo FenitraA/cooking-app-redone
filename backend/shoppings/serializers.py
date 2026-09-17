@@ -58,3 +58,24 @@ class ItemToBuySerializer(serializers.ModelSerializer):
     class Meta:
         model = ItemToBuy
         fields = "__all__"
+
+### ------------------------------
+#  Search serializers
+### ------------------------------
+
+class ItemCategorySearchSerializer(serializers.Serializer):
+    name = serializers.CharField(required=False)
+    
+class ItemToBuySearchSerializer(serializers.Serializer):
+    name = serializers.CharField(required=False)
+    ingredient_id = serializers.CharField(required=False)
+    
+class ShoppingItemSearchSerializer(serializers.Serializer):
+    name = serializers.CharField(required=False)
+    ingredient_id = serializers.CharField(required=False)
+    start_date = serializers.DateField(required=False)
+    end_date = serializers.DateField(required=False)
+
+class ShoppingSearchSerializer(serializers.Serializer):
+    start_date = serializers.DateField(required=False)
+    end_date = serializers.DateField(required=False)
