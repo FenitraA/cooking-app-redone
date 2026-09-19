@@ -1,6 +1,8 @@
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework import viewsets
+
+from core.views import SoftDeleteModelViewSet
 from ingredients.models import (
     Ingredient,
     IngredientStock,
@@ -9,17 +11,6 @@ from ingredients.models import (
     Seller,
     UnitGroup,
 )
-
-from django.db.models import (
-    DecimalField,
-    ExpressionWrapper,
-    F,
-    OuterRef,
-    Subquery,
-    Sum,
-    Value,
-)
-from django.db.models.functions import Coalesce
 
 from ingredients.serializers import (
     IngredientSearchSerializer,
@@ -32,8 +23,7 @@ from ingredients.serializers import (
     SellerSerializer,
     UnitGroupSerializer,
 )
-from recipes.models import MealIngredient
-
+import cloudinary.uploader
 
 @extend_schema_view(
     list=extend_schema(tags=["UnitGroups"]),
@@ -43,7 +33,7 @@ from recipes.models import MealIngredient
     partial_update=extend_schema(tags=["UnitGroups"]),
     destroy=extend_schema(tags=["UnitGroups"]),
 )
-class UnitGroupViewSet(viewsets.ModelViewSet):
+class UnitGroupViewSet(SoftDeleteModelViewSet):
     queryset = UnitGroup.objects.all()
     serializer_class = UnitGroupSerializer
     permission_classes = [DjangoModelPermissions]
@@ -59,7 +49,7 @@ class UnitGroupViewSet(viewsets.ModelViewSet):
     partial_update=extend_schema(tags=["IngredientUnits"]),
     destroy=extend_schema(tags=["IngredientUnits"]),
 )
-class IngredientUnitViewSet(viewsets.ModelViewSet):
+class IngredientUnitViewSet(SoftDeleteModelViewSet):
     serializer_class = IngredientUnitSerializer
     permission_classes = [DjangoModelPermissions]
 
@@ -79,7 +69,7 @@ class IngredientUnitViewSet(viewsets.ModelViewSet):
     partial_update=extend_schema(tags=["IngredientTypes"]),
     destroy=extend_schema(tags=["IngredientTypes"]),
 )
-class IngredientTypeViewSet(viewsets.ModelViewSet):
+class IngredientTypeViewSet(SoftDeleteModelViewSet):
     serializer_class = IngredientTypeSerializer
     permission_classes = [DjangoModelPermissions]
 
@@ -97,7 +87,7 @@ class IngredientTypeViewSet(viewsets.ModelViewSet):
     partial_update=extend_schema(tags=["Ingredients"]),
     destroy=extend_schema(tags=["Ingredients"]),
 )
-class IngredientViewSet(viewsets.ModelViewSet):
+class IngredientViewSet(SoftDeleteModelViewSet):
     serializer_class = IngredientSerializer
     permission_classes = [DjangoModelPermissions]
 
@@ -139,7 +129,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
     partial_update=extend_schema(tags=["Sellers"]),
     destroy=extend_schema(tags=["Sellers"]),
 )
-class SellerViewSet(viewsets.ModelViewSet):
+class SellerViewSet(SoftDeleteModelViewSet):
     serializer_class = SellerSerializer
     permission_classes = [DjangoModelPermissions]
 
@@ -157,7 +147,7 @@ class SellerViewSet(viewsets.ModelViewSet):
     partial_update=extend_schema(tags=["IngredientStocks"]),
     destroy=extend_schema(tags=["IngredientStocks"]),
 )
-class IngredientStockViewSet(viewsets.ModelViewSet):
+class IngredientStockViewSet(SoftDeleteModelViewSet):
     queryset = IngredientStock.objects.all()
     serializer_class = IngredientStockSerializer
     permission_classes = [DjangoModelPermissions]

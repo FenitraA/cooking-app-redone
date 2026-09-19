@@ -59,9 +59,6 @@ class ItemToBuySerializer(serializers.ModelSerializer):
         model = ItemToBuy
         fields = "__all__"
 
-### ------------------------------
-#  Search serializers
-### ------------------------------
 
 class ItemCategorySearchSerializer(serializers.Serializer):
     name = serializers.CharField(required=False)
@@ -79,3 +76,17 @@ class ShoppingItemSearchSerializer(serializers.Serializer):
 class ShoppingSearchSerializer(serializers.Serializer):
     start_date = serializers.DateField(required=False)
     end_date = serializers.DateField(required=False)
+    
+
+### ------------------------------
+#  Create serializers
+### ------------------------------
+
+class ShoppingCreateFromItemsToBuySerializer(serializers.Serializer):
+    item_to_buy_ids = serializers.ListField(
+        child=serializers.CharField(),
+        allow_empty=False,
+    )
+
+    shopping_date = serializers.DateField()
+    description = serializers.CharField()

@@ -1,3 +1,7 @@
-from django.shortcuts import render
+from rest_framework import viewsets
 
-# Create your views here.
+class SoftDeleteModelViewSet(viewsets.ModelViewSet):
+
+    def perform_destroy(self, instance):
+        instance.state = -1
+        instance.save(update_fields=["state", "updated_at"])

@@ -1,6 +1,8 @@
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework import viewsets
+
+from core.views import SoftDeleteModelViewSet
 from households.models import Household
 from households.serializers import HouseholdSerializer
 
@@ -13,7 +15,7 @@ from households.serializers import HouseholdSerializer
     partial_update=extend_schema(tags=["Households"]),
     destroy=extend_schema(tags=["Households"]),
 )
-class HouseholdViewSet(viewsets.ModelViewSet):
+class HouseholdViewSet(SoftDeleteModelViewSet):
     serializer_class = HouseholdSerializer
     permission_classes = [DjangoModelPermissions]
 

@@ -1,6 +1,8 @@
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework import viewsets
+
+from core.views import SoftDeleteModelViewSet
 from plannings.models import PlanningRecipe
 from plannings.serializers import PlanningRecipeSerializer
 
@@ -12,7 +14,7 @@ from plannings.serializers import PlanningRecipeSerializer
     partial_update=extend_schema(tags=["PlanningRecipes"]),
     destroy=extend_schema(tags=["PlanningRecipes"]),
 )
-class PlanningRecipeViewSet(viewsets.ModelViewSet):
+class PlanningRecipeViewSet(SoftDeleteModelViewSet):
     queryset = PlanningRecipe.objects.all()
     serializer_class = PlanningRecipeSerializer
     permission_classes = [DjangoModelPermissions]

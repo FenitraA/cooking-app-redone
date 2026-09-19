@@ -1,6 +1,8 @@
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework import viewsets
+
+from core.views import SoftDeleteModelViewSet
 from recipes.models import Meal, Recipe
 from recipes.serializers import MealSerializer, RecipeSerializer
 from shoppings.models import ItemCategory, ItemToBuy, Shopping, ShoppingItem
@@ -9,11 +11,18 @@ from shoppings.serializers import (
     ItemCategorySerializer,
     ItemToBuySearchSerializer,
     ItemToBuySerializer,
+    ShoppingCreateFromItemsToBuySerializer,
     ShoppingItemSearchSerializer,
     ShoppingItemSerializer,
     ShoppingSearchSerializer,
     ShoppingSerializer,
 )
+from django.db import transaction
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework import status
+
+from shoppings.services.shoppings import ShoppingService
 
 
 @extend_schema_view(
@@ -26,7 +35,7 @@ from shoppings.serializers import (
     partial_update=extend_schema(tags=["ItemCategories"]),
     destroy=extend_schema(tags=["ItemCategories"]),
 )
-class ItemCategoryViewSet(viewsets.ModelViewSet):
+class ItemCategoryViewSet(SoftDeleteModelViewSet):
     serializer_class = ItemCategorySerializer
     permission_classes = [DjangoModelPermissions]
 
@@ -37,14 +46,14 @@ class ItemCategoryViewSet(viewsets.ModelViewSet):
 
 
 @extend_schema_view(
-    list=extend_schema(tags=["Shoppings"], parameters=[ShoppingSearchSerializer]),
-    retrieve=extend_schema(tags=["Shoppings"]),
-    create=extend_schema(tags=["Shoppings"]),
-    update=extend_schema(tags=["Shoppings"]),
-    partial_update=extend_schema(tags=["Shoppings"]),
-    destroy=extend_schema(tags=["Shoppings"]),
+    list=extend_schema(tags=["Shopping"], parameters=[ShoppingSearchSerializer]),
+    retrieve=extend_schema(tags=["Shopping"]),
+    create=extend_schema(tags=["Shopping"]),
+    update=extend_schema(tags=["Shopping"]),
+    partial_update=extend_schema(tags=["Shopping"]),
+    destroy=extend_schema(tags=["Shopping"]),
 )
-class ShoppingViewSet(viewsets.ModelViewSet):
+class ShoppingViewSet(SoftDeleteModelViewSet):
     serializer_class = ShoppingSerializer
     permission_classes = [DjangoModelPermissions]
 
@@ -55,16 +64,40 @@ class ShoppingViewSet(viewsets.ModelViewSet):
             .filter_end_date(self.request.query_params.get("end_date"))
         )
 
+    @action(
+        detail=False,
+        methods=["post"],
+        url_path="from-items-to-buy",
+    )
+    @transaction.atomic
+    def create_from_items_to_buy(self, request):
+        serializer = ShoppingCreateFromItemsToBuySerializer(
+            data=request.data
+        )
+        serializer.is_valid(raise_exception=True)
+
+        shopping = ShoppingService.create_from_items_to_buy(
+            household=request.user.household,
+            data=serializer.validated_data,
+        )
+
+        return Response(
+            ShoppingSerializer(shopping).data,
+            status=status.HTTP_201_CREATED,
+        )
+
 
 @extend_schema_view(
-    list=extend_schema(tags=["ShoppingItems"], parameters=[ShoppingItemSearchSerializer]),
+    list=extend_schema(
+        tags=["ShoppingItems"], parameters=[ShoppingItemSearchSerializer]
+    ),
     retrieve=extend_schema(tags=["ShoppingItems"]),
     create=extend_schema(tags=["ShoppingItems"]),
     update=extend_schema(tags=["ShoppingItems"]),
     partial_update=extend_schema(tags=["ShoppingItems"]),
     destroy=extend_schema(tags=["ShoppingItems"]),
 )
-class ShoppingItemViewSet(viewsets.ModelViewSet):
+class ShoppingItemViewSet(SoftDeleteModelViewSet):
     serializer_class = ShoppingItemSerializer
     permission_classes = [DjangoModelPermissions]
 
@@ -87,7 +120,7 @@ class ShoppingItemViewSet(viewsets.ModelViewSet):
     partial_update=extend_schema(tags=["ItemsToBuy"]),
     destroy=extend_schema(tags=["ItemsToBuy"]),
 )
-class ItemToBuyViewSet(viewsets.ModelViewSet):
+class ItemToBuyViewSet(SoftDeleteModelViewSet):
     serializer_class = ItemToBuySerializer
     permission_classes = [DjangoModelPermissions]
 

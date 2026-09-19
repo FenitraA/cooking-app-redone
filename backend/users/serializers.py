@@ -10,6 +10,7 @@ class MyTokenSerializer(TokenObtainPairSerializer):
 
         token["email"] = user.email
         token["username"] = user.username
+        token["household"] = user.household_id
 
         return token
 
