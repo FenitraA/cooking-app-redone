@@ -6,6 +6,7 @@ from recipes.models import (
     MealIngredient,
 )
 
+
 class RecipeIngredientSerializer(serializers.ModelSerializer):
     ingredient_name = serializers.CharField(
         source="ingredient.name",
@@ -20,7 +21,29 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecipeIngredient
         fields = "__all__"
-        
+
+
+class RecipeIngredientReadSerializer(
+    serializers.Serializer
+):
+    recipe_ingredient_base = (
+        RecipeIngredientSerializer()
+    )
+
+    recipe_name = serializers.CharField()
+
+    ingredient_name = serializers.CharField()
+
+    ingredient_unit = serializers.CharField()
+
+    estimated_cost_per_unit = (
+        serializers.DecimalField(
+            max_digits=16,
+            decimal_places=2,
+        )
+    )
+
+
 class RecipeSerializer(serializers.ModelSerializer):
     recipe_ingredients = RecipeIngredientSerializer(
         many=True,
@@ -30,7 +53,8 @@ class RecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = "__all__"
-        
+
+
 class MealIngredientSerializer(serializers.ModelSerializer):
     ingredient_name = serializers.CharField(
         source="ingredient_stock.ingredient.name",
@@ -45,7 +69,8 @@ class MealIngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = MealIngredient
         fields = "__all__"
-        
+
+
 class MealSerializer(serializers.ModelSerializer):
     meal_ingredients = MealIngredientSerializer(
         many=True,

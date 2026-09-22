@@ -19,10 +19,10 @@ class ShoppingQuerySet(models.QuerySet):
 
     def filter_start_date(self, start_date=None):
         if start_date is not None:
-            return self.filter(shopping__shopping_date__gte=start_date)
+            return self.filter(shopping_date__gte=start_date)
         return self
 
     def filter_end_date(self, end_date=None):
         if end_date is not None:
-            return self.filter(shopping__shopping_date__lte=end_date)
+            return self.filter(shopping_date__lte=end_date)
         return self

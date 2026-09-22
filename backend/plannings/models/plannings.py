@@ -1,6 +1,7 @@
 from django.db import models
 
 from core.models import BaseModel
+from plannings.querysets.plannings import PlanningRecipeQuerySet
 from recipes.models import Recipe
 from core.validators import validate_positive
 
@@ -33,3 +34,5 @@ class PlanningRecipe(BaseModel):
         on_delete=models.CASCADE,
         related_name="planning_recipes",
     )
+
+    objects = PlanningRecipeQuerySet.as_manager()
