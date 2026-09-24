@@ -6,11 +6,12 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 
 from core.views import SoftDeleteModelViewSet
+from plannings.dataclasses import PlanningRecipeRead
 from plannings.models import PlanningRecipe
 from plannings.querysets.plannings import PlanningRecipeQuerySet
 from plannings.serializers import PlanningRecipeSerializer, PlanningResultSerializer, PlanningDateRangeSerializer
 from plannings.services.plannings import get_total_estimated_price_from_repartitions, get_total_ingredients_to_buy, \
-    redistribute_to_repartition
+    redistribute_to_repartition, build_planning_recipe_reads
 
 
 @extend_schema_view(
@@ -29,6 +30,7 @@ class PlanningRecipeViewSet(viewsets.ModelViewSet):
         return (
             PlanningRecipe.objects
             .active()
+            .with_related()
         )
 
     @action(
@@ -62,7 +64,7 @@ class PlanningRecipeViewSet(viewsets.ModelViewSet):
             .filter_end_date(end_date)
         )
 
-        planning_recipe_reads = (
+        planning_recipe_reads : list[PlanningRecipeRead] = (
             build_planning_recipe_reads(
                 queryset
             )

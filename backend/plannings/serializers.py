@@ -16,7 +16,6 @@ class PlanningRecipeSerializer(serializers.ModelSerializer):
 class PlanningRecipeReadSerializer(serializers.Serializer):
     planning_recipe = PlanningRecipeSerializer()
     recipe = RecipeSerializer()
-    is_done = serializers.BooleanField()
     estimated_cost_price = serializers.DecimalField(
         max_digits=16,
         decimal_places=2,
