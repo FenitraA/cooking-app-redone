@@ -5,7 +5,6 @@ from rest_framework.permissions import DjangoModelPermissions
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 
-from core.views import SoftDeleteModelViewSet
 from plannings.dataclasses import PlanningRecipeRead
 from plannings.models import PlanningRecipe
 from plannings.querysets.plannings import PlanningRecipeQuerySet

@@ -4,6 +4,8 @@ from django.db import models
 
 from core.models import TimestampedAndStated
 from core.validators import validate_positive
+from recipes.querysets.meal_ingredients import MealIngredientQuerySet
+
 
 class MealIngredient(TimestampedAndStated):
     id_prefix = "meal_ingredient"
@@ -40,3 +42,5 @@ class MealIngredient(TimestampedAndStated):
         on_delete=models.CASCADE,
         related_name="meal_ingredients",
     )
+
+    objects = MealIngredientQuerySet.as_manager()

@@ -3,6 +3,7 @@ from django.db import models
 from core.models import BaseModelPlusImageCloudStorage
 from django.core.validators import MinLengthValidator
 from core.validators import validate_positive
+from recipes.querysets.recipes import RecipeQuerySet
 
 
 class Recipe(BaseModelPlusImageCloudStorage):
@@ -38,3 +39,5 @@ class Recipe(BaseModelPlusImageCloudStorage):
         on_delete=models.CASCADE,
         related_name="recipes",
     )
+
+    objects = RecipeQuerySet.as_manager()

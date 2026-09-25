@@ -3,6 +3,8 @@ from django.db import models
 
 from core.models import BaseModel
 from core.validators import validate_positive
+from recipes.querysets.meals import MealQuerySet
+
 
 class Meal(BaseModel):
     id_prefix = "meal"
@@ -20,3 +22,5 @@ class Meal(BaseModel):
         on_delete=models.CASCADE,
         related_name="meals",
     )
+
+    objects = MealQuerySet.as_manager()
