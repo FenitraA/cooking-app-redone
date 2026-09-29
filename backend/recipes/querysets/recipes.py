@@ -1,8 +1,6 @@
+from django.apps import apps
 from django.db import models
 from django.db.models import Prefetch
-
-from recipes.models import MealIngredient
-
 
 class RecipeQuerySet(models.QuerySet):
 
@@ -10,6 +8,11 @@ class RecipeQuerySet(models.QuerySet):
         return self.filter(state__gt=0)
 
     def with_related(self):
+        # Prefetch object import to avoid circular imports
+        MealIngredient = apps.get_model(
+            "recipes",
+            "MealIngredient",
+        )
         return (
             self.select_related(
                 "recipe",

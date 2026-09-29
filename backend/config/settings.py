@@ -130,6 +130,16 @@ SIMPLE_JWT = {
     "TOKEN_OBTAIN_SERIALIZER": "users.serializers.MyTokenSerializer",
 }
 
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": env("REDIS_URL"),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+        "KEY_PREFIX": "cooking-app",
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
