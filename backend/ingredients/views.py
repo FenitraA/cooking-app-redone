@@ -1,8 +1,9 @@
+import cloudinary.uploader
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework.permissions import DjangoModelPermissions
-from rest_framework import viewsets
 
 from core.views import SoftDeleteModelViewSet
+from core.cache_utils import household_cache, clear_household_cache, get_household_id
 from ingredients.models import (
     Ingredient,
     IngredientStock,
@@ -11,7 +12,6 @@ from ingredients.models import (
     Seller,
     UnitGroup,
 )
-
 from ingredients.serializers import (
     IngredientSearchSerializer,
     IngredientSerializer,
@@ -23,7 +23,7 @@ from ingredients.serializers import (
     SellerSerializer,
     UnitGroupSerializer,
 )
-import cloudinary.uploader
+
 
 @extend_schema_view(
     list=extend_schema(tags=["UnitGroups"]),
@@ -38,11 +38,32 @@ class UnitGroupViewSet(SoftDeleteModelViewSet):
     serializer_class = UnitGroupSerializer
     permission_classes = [DjangoModelPermissions]
 
+    @household_cache(namespace="unit_groups")
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @household_cache(namespace="unit_groups")
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    def _invalidate_cache(self):
+        clear_household_cache("unit_groups", get_household_id(self.request))
+
+    def perform_create(self, serializer):
+        super().perform_create(serializer)
+        self._invalidate_cache()
+
+    def perform_update(self, serializer):
+        super().perform_update(serializer)
+        self._invalidate_cache()
+
+    def perform_destroy(self, instance):
+        super().perform_destroy(instance)
+        self._invalidate_cache()
+
 
 @extend_schema_view(
-    list=extend_schema(
-        tags=["IngredientUnits"], parameters=[IngredientUnitSearchSerializer]
-    ),
+    list=extend_schema(tags=["IngredientUnits"], parameters=[IngredientUnitSearchSerializer]),
     retrieve=extend_schema(tags=["IngredientUnits"]),
     create=extend_schema(tags=["IngredientUnits"]),
     update=extend_schema(tags=["IngredientUnits"]),
@@ -58,11 +79,32 @@ class IngredientUnitViewSet(SoftDeleteModelViewSet):
             self.request.query_params.get("name")
         )
 
+    @household_cache(namespace="ingredient_units")
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @household_cache(namespace="ingredient_units")
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    def _invalidate_cache(self):
+        clear_household_cache("ingredient_units", get_household_id(self.request))
+
+    def perform_create(self, serializer):
+        super().perform_create(serializer)
+        self._invalidate_cache()
+
+    def perform_update(self, serializer):
+        super().perform_update(serializer)
+        self._invalidate_cache()
+
+    def perform_destroy(self, instance):
+        super().perform_destroy(instance)
+        self._invalidate_cache()
+
 
 @extend_schema_view(
-    list=extend_schema(
-        tags=["IngredientTypes"], parameters=[IngredientTypeSearchSerializer]
-    ),
+    list=extend_schema(tags=["IngredientTypes"], parameters=[IngredientTypeSearchSerializer]),
     retrieve=extend_schema(tags=["IngredientTypes"]),
     create=extend_schema(tags=["IngredientTypes"]),
     update=extend_schema(tags=["IngredientTypes"]),
@@ -77,6 +119,29 @@ class IngredientTypeViewSet(SoftDeleteModelViewSet):
         return IngredientType.objects.active().filter_name(
             self.request.query_params.get("name")
         )
+
+    @household_cache(namespace="ingredient_types")
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @household_cache(namespace="ingredient_types")
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    def _invalidate_cache(self):
+        clear_household_cache("ingredient_types", get_household_id(self.request))
+
+    def perform_create(self, serializer):
+        super().perform_create(serializer)
+        self._invalidate_cache()
+
+    def perform_update(self, serializer):
+        super().perform_update(serializer)
+        self._invalidate_cache()
+
+    def perform_destroy(self, instance):
+        super().perform_destroy(instance)
+        self._invalidate_cache()
 
 
 @extend_schema_view(
@@ -105,9 +170,23 @@ class IngredientViewSet(SoftDeleteModelViewSet):
             )
         )
 
+    @household_cache(namespace="ingredients")
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @household_cache(namespace="ingredients")
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    def _invalidate_cache(self):
+        clear_household_cache("ingredients", get_household_id(self.request))
+
+    def perform_create(self, serializer):
+        super().perform_create(serializer)
+        self._invalidate_cache()
+
     def perform_update(self, serializer):
         ingredient = self.get_object()
-
         old_storage_key = ingredient.storage_key
 
         super().perform_update(serializer)
@@ -119,6 +198,12 @@ class IngredientViewSet(SoftDeleteModelViewSet):
                 old_storage_key,
                 invalidate=True,
             )
+
+        self._invalidate_cache()
+
+    def perform_destroy(self, instance):
+        super().perform_destroy(instance)
+        self._invalidate_cache()
 
 
 @extend_schema_view(
@@ -138,6 +223,29 @@ class SellerViewSet(SoftDeleteModelViewSet):
             self.request.query_params.get("name")
         )
 
+    @household_cache(namespace="sellers")
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @household_cache(namespace="sellers")
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    def _invalidate_cache(self):
+        clear_household_cache("sellers", get_household_id(self.request))
+
+    def perform_create(self, serializer):
+        super().perform_create(serializer)
+        self._invalidate_cache()
+
+    def perform_update(self, serializer):
+        super().perform_update(serializer)
+        self._invalidate_cache()
+
+    def perform_destroy(self, instance):
+        super().perform_destroy(instance)
+        self._invalidate_cache()
+
 
 @extend_schema_view(
     list=extend_schema(tags=["IngredientStocks"], parameters=[IngredientStockSerializer]),
@@ -156,3 +264,29 @@ class IngredientStockViewSet(SoftDeleteModelViewSet):
         return IngredientStock.objects.active().filter_ingredient(
             self.request.query_params.get("ingredient_id")
         )
+
+    @household_cache(namespace="ingredient_stocks")
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @household_cache(namespace="ingredient_stocks")
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    def _invalidate_cache(self):
+        household_id = get_household_id(self.request)
+        clear_household_cache("ingredient_stocks", household_id)
+        # Stock updates recalculate ingredient quantities, so clear ingredients cache as well
+        clear_household_cache("ingredients", household_id)
+
+    def perform_create(self, serializer):
+        super().perform_create(serializer)
+        self._invalidate_cache()
+
+    def perform_update(self, serializer):
+        super().perform_update(serializer)
+        self._invalidate_cache()
+
+    def perform_destroy(self, instance):
+        super().perform_destroy(instance)
+        self._invalidate_cache()
