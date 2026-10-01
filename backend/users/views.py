@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate
 
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -13,7 +13,8 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from config import settings
-from users.serializers import UserLoginSerializer
+from users.models import AppUser
+from users.serializers import UserLoginSerializer, AppUserSerializer, SimpleUserSerializer
 from users.throttles import LoginRateThrottle, RefreshRateThrottle
 
 
@@ -135,3 +136,11 @@ class LogoutView(APIView):
         response.delete_cookie("refresh_token")
 
         return response
+
+class MeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self,request):
+        user : AppUser = request.user
+        serializer = SimpleUserSerializer(user)
+        return Response(serializer.data)

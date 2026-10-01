@@ -31,3 +31,9 @@ class AppUserSerializer(serializers.ModelSerializer):
             "groups",
             "user_permissions",
         )
+
+class SimpleUserSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    email = serializers.EmailField()
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
