@@ -1,7 +1,6 @@
 from datetime import datetime, timezone
 from rest_framework_simplejwt.settings import api_settings
 
-from django.conf import settings
 from django.contrib.auth import authenticate
 
 from drf_spectacular.utils import extend_schema
@@ -13,6 +12,7 @@ from rest_framework.views import APIView
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from config import settings
 from users.serializers import UserLoginSerializer
 from users.throttles import LoginRateThrottle, RefreshRateThrottle
 
@@ -28,6 +28,10 @@ class LoginView(APIView):
     def post(self, request):
         username = request.data.get("username")
         password = request.data.get("password")
+
+        is_secure = False
+        if settings.ENVIRONMENT == "online_dev" or settings.ENVIRONMENT == "online_prod":
+            is_secure = True
 
         user = authenticate(
             username=username,
@@ -55,7 +59,7 @@ class LoginView(APIView):
             key="access_token",
             value=str(access),
             httponly=True,
-            secure=True,
+            secure=is_secure,
             samesite="Lax",
             max_age=int(api_settings.ACCESS_TOKEN_LIFETIME.total_seconds()),
         )
@@ -64,7 +68,7 @@ class LoginView(APIView):
             key="refresh_token",
             value=str(refresh),
             httponly=True,
-            secure=True,
+            secure=is_secure,
             samesite="Lax",
             max_age=int(api_settings.REFRESH_TOKEN_LIFETIME.total_seconds()),
         )
@@ -79,6 +83,10 @@ class RefreshView(APIView):
 
     def post(self, request):
         refresh_token = request.COOKIES.get("refresh_token")
+
+        is_secure = False
+        if settings.ENVIRONMENT == "online_dev" or settings.ENVIRONMENT == "online_prod":
+            is_secure = True
 
         if not refresh_token:
             return Response(
@@ -104,7 +112,7 @@ class RefreshView(APIView):
             key="access_token",
             value=str(refresh.access_token),
             httponly=True,
-            secure=False,
+            secure=is_secure,
             samesite="Lax",
             max_age=int(api_settings.REFRESH_TOKEN_LIFETIME.total_seconds()),
         )
